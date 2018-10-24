@@ -1,75 +1,66 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { ObjectType, Field, ID, InputType } from 'type-graphql'
-import { Package, Attribute } from '..'
-import RakkitFrontShortText from '../../types/FrontTypes/types/text/RakkitFrontShortText'
-import RakkitFrontID from '../../types/FrontTypes/types/other/RakkitFrontID'
-import RakkitPackage from '../../types/FrontTypes/RakkitPackage'
+import { Package, Attribute } from '../../decorators'
+import  { RPackage, RId, RShorttext } from '../../class/FrontTypes'
 import Page from '../Page/PageModel'
-import Example from '../Example/ExampleModel';
+import Example from '../Example/ExampleModel'
 
-@Package(new RakkitPackage())
+@Package(new RPackage())
 @InputType('CultureInput')
 @ObjectType()
 @Entity({name: 'Culture'})
 export default class Culture extends BaseEntity {
-  private _pages: Promise<Page[]>
-  private _id: number
-  private _langCode: string
-  private _countryCode: string
-  private _examples: Promise<Example[]>
+  private pages: Page[]
+  private langCode: string
+  private countryCode: string
+  private examples: Example[]
 
-  @Field(type => [Example], {nullable: true})
-  @OneToMany(type => Example, culture => culture.Culture)
-  public get Examples(): Promise<Example[]> {
-    return this._examples
-  }
-  public set Examples(val: Promise<Example[]>) {
-    this._examples = val
-  }
-
-  @Attribute(new RakkitFrontID())
-  @Field(type => ID, {nullable: true})
+  @Attribute(new RId())
+  @Field(type => ID, { nullable: true })
   @PrimaryGeneratedColumn()
-  public get Id(): number {
-    return this._id
-  }
-  public set Id(val: number) {
-    this._id = val
-  }
+  public readonly Id: number
 
-  @Attribute(new RakkitFrontShortText())
-  @Field({nullable: true})
+  @Attribute(new RShorttext())
+  @Field({ nullable: true })
   @Column()
   public get LangCode(): string {
-    return this._langCode
+    return this.langCode
   }
   public set LangCode(val: string) {
-    this._langCode = val
+    this.langCode = val
   }
 
-  @Attribute(new RakkitFrontShortText())
-  @Field({nullable: true})
+  @Attribute(new RShorttext())
+  @Field({ nullable: true })
   @Column()
   public get CountryCode(): string {
-    return this._countryCode
+    return this.countryCode
   }
   public set CountryCode(val: string) {
-    this._countryCode = val
+    this.countryCode = val
   }
 
-  @Attribute(new RakkitFrontShortText(null, true, true, false))
-  @Field({nullable: true})
+  @Attribute(new RShorttext(null, true, true, false))
+  @Field({ nullable: true })
   public get CultureInfo(): string {
-    return `${this._langCode.toLowerCase()}-${this._countryCode.toUpperCase()}`
+    return `${this.langCode.toLowerCase()}-${this.countryCode.toUpperCase()}`
   }
 
-  @Field(type => [Page], {nullable: true})
+  @Field(type => [Page], { nullable: true })
   @OneToMany(type => Page, page => page.Culture)
-  public get Pages(): Promise<Page[]> {
-    return this._pages
+  public get Pages(): Page[] {
+    return this.pages
   }
-  public set Pages(val: Promise<Page[]>) {
-    this._pages = val
+  public set Pages(val: Page[]) {
+    this.pages = val
+  }
+
+  @Field(type => [Example], { nullable: true })
+  @OneToMany(type => Example, culture => culture.Culture)
+  public get Examples(): Example[] {
+    return this.examples
+  }
+  public set Examples(val: Example[]) {
+    this.examples = val
   }
 }
- 
